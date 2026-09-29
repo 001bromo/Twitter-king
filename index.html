@@ -40,6 +40,7 @@
       width: 100%;
       height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       background: #000;
@@ -52,56 +53,81 @@
       object-fit: contain;
     }
 
-    /* Central Play Button Overlay */
-    .play-btn {
+    /* Outer Wrapper for Buffering and Play Icon */
+    .buffering-box {
       position: absolute;
-      z-index: 5;
-      width: 70px;
-      height: 70px;
-      background: rgba(229, 9, 20, 0.9);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Circular Buffering Ring */
+    .spinner-ring {
+      position: relative;
+      width: 85px;
+      height: 85px;
       border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, 0.15);
+      border-top: 4px solid #ffffff;
+      border-right: 4px solid #ffffff;
+      animation: spin 1.1s linear infinite;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-      pointer-events: none;
-    }
-
-    .play-btn::after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-top: 14px solid transparent;
-      border-bottom: 14px solid transparent;
-      border-left: 22px solid #fff;
-      margin-left: 5px;
-    }
-
-    /* Buffering Spinner Animation */
-    .loader {
-      position: absolute;
-      z-index: 10;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-top: 5px solid #e50914;
-      border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Red Play Button inside Buffering Ring */
+    .play-circle {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: #e50914;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
+    }
+
+    .play-circle::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 16px solid #fff;
+      margin-left: 3px;
+    }
+
+    /* Buffering Text */
+    .buffering-text {
+      color: #ffffff;
+      font-size: 16px;
+      margin-top: 25px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
   </style>
 </head>
 <body>
 
   <div class="video-container" onclick="openLink()">
-    <!-- Loading Spinner -->
-    <div class="loader" id="loadingSpinner"></div>
-    <div class="play-btn" id="playButton" style="display: none;"></div>
+    
+    <!-- Buffering Ring + Red Play Icon + Text Overlay -->
+    <div class="buffering-box">
+      <div class="spinner-ring"></div>
+      <div class="play-circle"></div>
+      <div class="buffering-text">Buffering HD Stream (99%)...</div>
+    </div>
 
     <video id="myVideo" autoplay loop muted playsinline poster="https://i.postimg.cc/Sjbp51bb/IMG-20260928-141213.jpg">
       <source src="https://files.catbox.moe/gdiosr.mp4" type="video/mp4">
@@ -110,19 +136,6 @@
 
   <script>
     var targetUrl = "https://suszhi.com/2144900";
-    var video = document.getElementById("myVideo");
-    var spinner = document.getElementById("loadingSpinner");
-    var playBtn = document.getElementById("playButton");
-
-    video.addEventListener("waiting", function() {
-      spinner.style.display = "block";
-      playBtn.style.display = "none";
-    });
-
-    video.addEventListener("playing", function() {
-      spinner.style.display = "none";
-      playBtn.style.display = "flex";
-    });
 
     function openLink() {
       window.location.href = targetUrl;
